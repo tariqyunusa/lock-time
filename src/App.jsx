@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function Popup() {
+  const [sites, setSites] = useState({});
+  const [limits, setLimits] = useState({});
+  const [inputUrl, setInputUrl] = useState("");
+  const [inputLimit, setInputLimit] = useState("");
+
+  useEffect(() => {
+    chrome.storage.local.get(["timeSpent", "limits"], (data) => {
+      setSites(data.timeSpent || {});
+      setLimits(data.limits || {});
+    });
+  }, []);
+
+  const setSiteLimit = () => {
+    chrome.storage.local.get("limits", (data) => {
+      let newLimits = { ...data.limits, [inputUrl]: parseInt(inputLimit) };
+      chrome.storage.local.set({ limits: newLimits });
+      setLimits(newLimits);
+    });
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <h2>LockTime</h2>
+      <ul>
+        {Object.keys(sites).map((site) => (
+          <li key={site}>{site}: {sites[site]} mins / {limits[site] || "No limit"} mins</li>
+        ))}
+      </ul>
+      <input type="text" placeholder="Enter site" onChange={(e) => setInputUrl(e.target.value)} value={inputUrl}/>
+      <input type="number" placeholder="Time limit (mins)" onChange={(e) => setInputLimit(e.target.value)} value={inputLimit}/>
+      <button onClick={setSiteLimit}>Set Limit</button>
+    </div>
+  );
 }
-
-export default App

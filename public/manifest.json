@@ -4,6 +4,7 @@
     "description": "Curb distractions, stay locked in",
     "version" : "1.0.0",
     "permissions" : ["storage", "tabs", "alarms"],
+    "background": {"service_worker" : "background.js"},
     "host_permissions" : ["<all_urls>"],
     "action": {"default_popup": "index.html"}
 
