@@ -1,36 +1,47 @@
 import { useState, useEffect } from "react";
 
 export default function Popup() {
-  const [sites, setSites] = useState({});
+  const [timeSpent, setTimeSpent] = useState({});
   const [limits, setLimits] = useState({});
   const [inputUrl, setInputUrl] = useState("");
   const [inputLimit, setInputLimit] = useState("");
 
+  const today = new Date();
+  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const fullDate = `${dayNames[today.getDay()]} - ${today.getDate().toString().padStart(2, '0')}-${(today.getMonth() + 1)
+    .toString()
+    .padStart(2, '0')}-${today.getFullYear()}`;
+
   useEffect(() => {
-    chrome.storage.local.get(["timeSpent", "limits"], (data) => {
-      setSites(data.timeSpent || {});
+    chrome.storage.sync.get(["timeSpent", "limits"], (data) => {
+      setTimeSpent(data.timeSpent?.[fullDate] || {});
       setLimits(data.limits || {});
     });
   }, []);
 
   const setSiteLimit = () => {
-    chrome.storage.local.get("limits", (data) => {
+    if (!inputUrl || !inputLimit) return;
+    chrome.storage.sync.get("limits", (data) => {
       let newLimits = { ...data.limits, [inputUrl]: parseInt(inputLimit) };
-      chrome.storage.local.set({ limits: newLimits });
+      chrome.storage.sync.set({ limits: newLimits });
       setLimits(newLimits);
+      setInputUrl("");
+      setInputLimit("");
     });
   };
 
   return (
     <div>
-      <h2>LockTime</h2>
+      <h2>Productivity Tracker</h2>
       <ul>
-        {Object.keys(sites).map((site) => (
-          <li key={site}>{site}: {sites[site]} mins / {limits[site] || "No limit"} mins</li>
+        {Object.entries(timeSpent).map(([site, time]) => (
+          <li key={site}>
+            {site}: {time} mins / {limits[site] || "No limit"} mins
+          </li>
         ))}
       </ul>
-      <input type="text" placeholder="Enter site" onChange={(e) => setInputUrl(e.target.value)} value={inputUrl}/>
-      <input type="number" placeholder="Time limit (mins)" onChange={(e) => setInputLimit(e.target.value)} value={inputLimit}/>
+      <input type="text" placeholder="Enter site (e.g., youtube.com)" value={inputUrl} onChange={(e) => setInputUrl(e.target.value)} />
+      <input type="number" placeholder="Time limit (mins)" value={inputLimit} onChange={(e) => setInputLimit(e.target.value)} />
       <button onClick={setSiteLimit}>Set Limit</button>
     </div>
   );
