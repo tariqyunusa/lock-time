@@ -33,8 +33,10 @@ export default function Popup() {
 
   return (
     <div className="popup">
+      <div className="popup__header">
       <h2>🔐 Lock Time</h2>
       <p>Your Productivty Buddy.</p>
+      </div>
       <ul>
         {/* {Object.entries(timeSpent).map(([site, time]) => (
           <li key={site}>
@@ -42,9 +44,19 @@ export default function Popup() {
           </li>
         ))} */}
       </ul>
+      <div className="popup__routes">
+        <button disabled = {true}>Set Reminder</button>
+        <button disabled={true}>See Logged Time</button>
+      </div>
+      <div className="popup__input">
+        <p>⌛ Set Timer</p>
       <input type="text" placeholder="Enter site (e.g., youtube.com)" value={inputUrl} onChange={(e) => setInputUrl(e.target.value)} />
       <input type="number" placeholder="Time limit (mins)" value={inputLimit} onChange={(e) => setInputLimit(e.target.value)} />
       <button onClick={setSiteLimit}>Set Limit</button>
+      </div>
+      <div className="popup__footer">
+        <p>Made with 🍵 by <a href="https://tareeq.vercel.app">Tariq Yunusa</a></p>
+      </div>
     </div>
   );
 }
