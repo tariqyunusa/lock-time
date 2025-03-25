@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import './App.css'
 
 export default function Popup() {
   const [timeSpent, setTimeSpent] = useState({});
@@ -31,14 +32,15 @@ export default function Popup() {
   };
 
   return (
-    <div>
-      <h2>Productivity Tracker</h2>
+    <div className="popup">
+      <h2>🔐 Lock Time</h2>
+      <p>Your Productivty Buddy.</p>
       <ul>
-        {Object.entries(timeSpent).map(([site, time]) => (
+        {/* {Object.entries(timeSpent).map(([site, time]) => (
           <li key={site}>
             {site}: {time} mins / {limits[site] || "No limit"} mins
           </li>
-        ))}
+        ))} */}
       </ul>
       <input type="text" placeholder="Enter site (e.g., youtube.com)" value={inputUrl} onChange={(e) => setInputUrl(e.target.value)} />
       <input type="number" placeholder="Time limit (mins)" value={inputLimit} onChange={(e) => setInputLimit(e.target.value)} />
