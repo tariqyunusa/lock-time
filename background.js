@@ -1,16 +1,17 @@
-chrome.runtime.onInstalled.addListener(() => {
+import browser from "webextension-polyfill";
+browser.runtime.onInstalled.addListener(() => {
   console.log("🚀 Extension Installed: Tracking all sites.");
   
   // Initialize storage
-  chrome.storage.sync.set({ timeSpent: {}, limits: {} });
+  browser.storage.sync.set({ timeSpent: {}, limits: {} });
 
   // Create an alarm to update time every minute
-  chrome.alarms.create("trackTime", { periodInMinutes: 1 });
-  chrome.alarms.create("KeepAlive", { periodInMinutes: 5 });
+  browser.alarms.create("trackTime", { periodInMinutes: 1 });
+  browser.alarms.create("KeepAlive", { periodInMinutes: 5 });
 });
 
 // Track active tab updates
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === "complete" && tab.url) {
       const url = new URL(tab.url).hostname;
       console.log(`🌐 Navigated to: ${url}`);
@@ -19,9 +20,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 // Alarm listener to update time spent
-chrome.alarms.onAlarm.addListener((alarm) => {
+browser.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === "trackTime") {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
           if (tabs.length === 0 || !tabs[0].url) return;
 
           const url = new URL(tabs[0].url).hostname;
@@ -36,13 +37,13 @@ chrome.alarms.onAlarm.addListener((alarm) => {
           const fullDate = `${day} - ${date}`;
 
           // Retrieve and update time spent
-          chrome.storage.sync.get("timeSpent", (data) => {
+          browser.storage.sync.get("timeSpent", (data) => {
               let timeSpent = data.timeSpent || {};
               if (!timeSpent[fullDate]) timeSpent[fullDate] = {}; // Initialize for the day
               timeSpent[fullDate][url] = (timeSpent[fullDate][url] || 0) + 1;
 
               console.log(`🕒 ${url} on ${fullDate} - Time Spent: ${timeSpent[fullDate][url]} minutes`);
-              chrome.storage.sync.set({ timeSpent }, () => checkBlockSite(url)); // Check after update
+              browser.storage.sync.set({ timeSpent }, () => checkBlockSite(url)); // Check after update
           });
       });
   } else if (alarm.name === "KeepAlive") {
@@ -60,7 +61,7 @@ function checkBlockSite(url) {
       .padStart(2, '0')}-${now.getFullYear()}`;
   const fullDate = `${day} - ${date}`;
 
-  chrome.storage.sync.get(["timeSpent", "limits"], (data) => {
+  browser.storage.sync.get(["timeSpent", "limits"], (data) => {
       let timeSpent = data.timeSpent || {};
       let limits = data.limits || {};
 
@@ -77,9 +78,9 @@ function checkBlockSite(url) {
       if (limit && siteTime >= limit) {
           console.log(`🚫 [BLOCK] ${url} exceeded the limit! Redirecting...`);
 
-          chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
               if (tabs.length > 0) {
-                  chrome.tabs.update(tabs[0].id, { url: chrome.runtime.getURL("blocked.html") });
+                  browser.tabs.update(tabs[0].id, { url: browser.runtime.getURL("blocked.html") });
               }
           });
       }

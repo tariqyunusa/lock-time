@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import './App.css'
+import { CiAlarmOn } from "react-icons/ci";
+import { BiStats } from "react-icons/bi";
 
 export default function Popup() {
   const [timeSpent, setTimeSpent] = useState({});
@@ -32,11 +34,17 @@ export default function Popup() {
   };
 
   return (
-    <div className="popup">
-      <div className="popup__header">
-      <h2>🔐 Lock Time</h2>
-      <p>Your Productivty Buddy.</p>
-      </div>
+    <div className="bg-white h-full p-2 w-[350px] h-[400px] ">
+      <nav className="flex justify-between items-center font-semibold w-full border-b border-gray-200 py-4 ">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-3xl">Lock-Time</h1>
+        <p className="text-xs">Curb distractions, stay productive.</p>
+        </div>
+        <div className="flex gap-2">
+          <button className="bg-black text-white rounded-xl flex justify-center items center p-1.5 font-bold text-xl drop-shadow-xl cursor-pointer"><CiAlarmOn /></button>
+          <button className="bg-black text-white rounded-xl flex justify-center items center p-1.5 font-bold text-xl drop-shadow-xl cursor-pointer"><BiStats /></button>
+        </div>
+      </nav>
       <ul>
         {/* {Object.entries(timeSpent).map(([site, time]) => (
           <li key={site}>
