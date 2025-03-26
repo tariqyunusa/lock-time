@@ -44,10 +44,10 @@ export default function Popup() {
           </li>
         ))} */}
       </ul>
-      <div className="popup__routes">
+      {/* <div className="popup__routes">
         <button disabled = {true}>Set Reminder</button>
         <button disabled={true}>See Logged Time</button>
-      </div>
+      </div> */}
       <div className="popup__input">
         <p>⌛ Set Timer</p>
       <input type="text" placeholder="Enter site (e.g., youtube.com)" value={inputUrl} onChange={(e) => setInputUrl(e.target.value)} />

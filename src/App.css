@@ -31,7 +31,7 @@
   font-size: 1rem;
 }
 .popup__input input, .popup__input button{
-  border-radius: 24px;
+  border-radius: 12px;
   border: 1px solid #d1d1d1;
   outline: none;
   padding: 0.5rem;
@@ -73,7 +73,7 @@
   cursor: pointer;
   outline: none;
   border: none;
-  border-radius: 24px;
+  border-radius: 12px;
  box-shadow:  1px 1px rgba(0, 0, 0, 0.1);
   width: 100%;
   padding: 0.5rem 0.8rem;
