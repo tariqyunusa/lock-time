@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import './App.css'
 import { CiAlarmOn } from "react-icons/ci";
 import { BiStats } from "react-icons/bi";
+import {Link} from "react-router-dom"
 
 export default function Popup() {
   const [timeSpent, setTimeSpent] = useState({});
@@ -53,8 +54,12 @@ export default function Popup() {
           <p className="text-xs">Curb distractions, stay productive.</p>
         </div>
         <div className="flex gap-2">
+          <Link to='/reminders'>
           <button className="bg-black text-white rounded-xl flex justify-center items center p-1.5 font-bold text-xl drop-shadow-xl cursor-pointer"><CiAlarmOn /></button>
+          </Link>
+          <Link to='/stats'>
           <button className="bg-black text-white rounded-xl flex justify-center items center p-1.5 font-bold text-xl drop-shadow-xl cursor-pointer"><BiStats /></button>
+          </Link>
         </div>
       </nav>
       <ul>
