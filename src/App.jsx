@@ -3,6 +3,7 @@ import './App.css'
 import { CiAlarmOn } from "react-icons/ci";
 import { BiStats } from "react-icons/bi";
 import {Link} from "react-router-dom"
+import browser from "webextension-polyfill";
 
 export default function Popup() {
   const [timeSpent, setTimeSpent] = useState({});
@@ -16,34 +17,50 @@ export default function Popup() {
     .toString()
     .padStart(2, '0')}-${today.getFullYear()}`;
 
-  useEffect(() => {
-    chrome.storage.sync.get(["timeSpent", "limits"], (data) => {
-      setTimeSpent(data.timeSpent?.[fullDate] || {});
-      setLimits(data.limits || {});
-    });
+    useEffect(() => {
+      async function fetchData() {
+          try {
+              const data = await browser.storage.sync.get(["timeSpent", "limits"]);
+              setTimeSpent(data.timeSpent?.[fullDate] || {});
+              setLimits(data.limits || {});
+          } catch (error) {
+              console.error("Error fetching storage data:", error);
+          }
+      }
+  
+      fetchData();
   }, []);
+  
 
-  const setSiteLimit = () => {
+  const setSiteLimit = async () => {
     if (!inputUrl || !inputLimit) return;
-  
-    // Ensure 'www.' is added only if it's missing
-    let storedValue = inputUrl.startsWith("www.") ? inputUrl : `www.${inputUrl}`;
-  
-    chrome.storage.sync.get("limits", (data) => {
-      let newLimits = { ...data.limits, [storedValue]: parseInt(inputLimit) };
-      chrome.storage.sync.set({ limits: newLimits });
-      setLimits(newLimits);
-      setInputUrl(""); // Reset input field
-      setInputLimit("");
-    });
-  };
+
+    // Standardize URL: Remove "www."
+    let storedValue = inputUrl.replace(/^www\./, "");
+
+    try {
+        const data = await browser.storage.sync.get("limits");
+        let newLimits = { ...data.limits, [storedValue]: parseInt(inputLimit) };
+
+        await browser.storage.sync.set({ limits: newLimits });
+
+        setLimits(newLimits);
+        setInputUrl(""); 
+        setInputLimit("");
+
+        console.log(`✅ Limit set for ${storedValue}: ${inputLimit} mins`);
+    } catch (error) {
+        console.error("❌ Error setting site limit:", error);
+    }
+};
+
+
   const handleUrlChange = (e) => {
     let value = e.target.value.trim();
-  
-    // Remove 'https://' or 'http://' but keep the original input visible
+
     value = value.replace(/^(https?:\/\/)/, "");
   
-    setInputUrl(value); // Display without 'https://'
+    setInputUrl(value); 
   };
 
   return (
@@ -63,11 +80,7 @@ export default function Popup() {
         </div>
       </nav>
       <ul>
-        {/* {Object.entries(timeSpent).map(([site, time]) => (
-          <li key={site}>
-            {site}: {time} mins / {limits[site] || "No limit"} mins
-          </li>
-        ))} */}
+        
       </ul>
       {/* <div className="popup__routes">
         <button disabled = {true}>Set Reminder</button>
