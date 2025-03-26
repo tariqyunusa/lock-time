@@ -24,17 +24,29 @@ export default function Popup() {
 
   const setSiteLimit = () => {
     if (!inputUrl || !inputLimit) return;
+  
+    // Ensure 'www.' is added only if it's missing
+    let storedValue = inputUrl.startsWith("www.") ? inputUrl : `www.${inputUrl}`;
+  
     chrome.storage.sync.get("limits", (data) => {
-      let newLimits = { ...data.limits, [inputUrl]: parseInt(inputLimit) };
+      let newLimits = { ...data.limits, [storedValue]: parseInt(inputLimit) };
       chrome.storage.sync.set({ limits: newLimits });
       setLimits(newLimits);
-      setInputUrl("");
+      setInputUrl(""); // Reset input field
       setInputLimit("");
     });
   };
+  const handleUrlChange = (e) => {
+    let value = e.target.value.trim();
+  
+    // Remove 'https://' or 'http://' but keep the original input visible
+    value = value.replace(/^(https?:\/\/)/, "");
+  
+    setInputUrl(value); // Display without 'https://'
+  };
 
   return (
-    <div className="bg-white h-full p-2 w-[350px] h-[400px] ">
+    <div className="bg-white  p-2 w-[350px] h-[400px] relative">
       <nav className="flex justify-between items-center font-semibold w-full border-b border-gray-200 py-4 ">
         <div className="flex flex-col gap-1">
           <h1 className="text-3xl">Lock-Time</h1>
@@ -65,7 +77,7 @@ export default function Popup() {
           <input
             type="text"
             value={inputUrl}
-            onChange={(e) => setInputUrl(e.target.value)}
+            onChange={handleUrlChange}
             className="border border-gray-100 rounded-2xl p-2 shadow-xs transition:shadow duration-200 pl-[55px] w-[75%] outline-none"
           // placeholder="Enter website (e.g., youtube.com)"
           />
@@ -73,9 +85,9 @@ export default function Popup() {
         <div className="relative w-full flex justify-center items-center">
           <input type="number" placeholder="Time limit (mins)" value={inputLimit} className="border border-gray-100 rounded-2xl p-2 shadow-xs transition:shadow duration-200 w-[75%] outline-none" onChange={(e) => setInputLimit(e.target.value)} />
         </div>
-        <button onClick={setSiteLimit} className="bg-black shadow-xs text-white font-bold rounded-2xl p-2 shadow-2xl  w-[75%] cursor-pointer outline-none">Set Limit</button>
+        <button onClick={setSiteLimit} className="bg-black shadow-xs text-white font-bold rounded-2xl p-2   w-[75%] cursor-pointer outline-none">Set Limit</button>
       </div>
-      <div className="flex justify-end items-center">
+      <div className="flex justify-end items-center absolute bottom-0 right-0 p-2">
         <p className="font-light">Made with 🍵 by <a href="https://tareeq.vercel.app">Tariq Yunusa</a></p>
       </div>
     </div>
