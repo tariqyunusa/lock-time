@@ -38,7 +38,7 @@ export default function Popup() {
       <nav className="flex justify-between items-center font-semibold w-full border-b border-gray-200 py-4 ">
         <div className="flex flex-col gap-1">
           <h1 className="text-3xl">Lock-Time</h1>
-        <p className="text-xs">Curb distractions, stay productive.</p>
+          <p className="text-xs">Curb distractions, stay productive.</p>
         </div>
         <div className="flex gap-2">
           <button className="bg-black text-white rounded-xl flex justify-center items center p-1.5 font-bold text-xl drop-shadow-xl cursor-pointer"><CiAlarmOn /></button>
@@ -56,14 +56,27 @@ export default function Popup() {
         <button disabled = {true}>Set Reminder</button>
         <button disabled={true}>See Logged Time</button>
       </div> */}
-      <div className="popup__input">
-        <p>⌛ Set Timer</p>
-      <input type="text" placeholder="Enter site (e.g., youtube.com)" value={inputUrl} onChange={(e) => setInputUrl(e.target.value)} />
-      <input type="number" placeholder="Time limit (mins)" value={inputLimit} onChange={(e) => setInputLimit(e.target.value)} />
-      <button onClick={setSiteLimit}>Set Limit</button>
+      <div className="flex justify-center items-center flex-col gap-4 mt-4 mb-8">
+        <h1 className="text-2xl font-bold">Set Timer</h1>
+        <div className="relative w-full flex justify-center items-center">
+          <span className="absolute left-13 top-1/2 transform -translate-y-1/2 text-gray-500 select-none">
+            https://
+          </span>
+          <input
+            type="text"
+            value={inputUrl}
+            onChange={(e) => setInputUrl(e.target.value)}
+            className="border border-gray-100 rounded-2xl p-2 shadow-xs transition:shadow duration-200 pl-[55px] w-[75%] outline-none"
+          // placeholder="Enter website (e.g., youtube.com)"
+          />
+        </div>
+        <div className="relative w-full flex justify-center items-center">
+          <input type="number" placeholder="Time limit (mins)" value={inputLimit} className="border border-gray-100 rounded-2xl p-2 shadow-xs transition:shadow duration-200 w-[75%] outline-none" onChange={(e) => setInputLimit(e.target.value)} />
+        </div>
+        <button onClick={setSiteLimit} className="bg-black shadow-xs text-white font-bold rounded-2xl p-2 shadow-2xl  w-[75%] cursor-pointer outline-none">Set Limit</button>
       </div>
-      <div className="popup__footer">
-        <p>Made with 🍵 by <a href="https://tareeq.vercel.app">Tariq Yunusa</a></p>
+      <div className="flex justify-end items-center">
+        <p className="font-light">Made with 🍵 by <a href="https://tareeq.vercel.app">Tariq Yunusa</a></p>
       </div>
     </div>
   );
