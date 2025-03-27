@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import browser from "webextension-polyfill";
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { LineChart, Line, PieChart, Pie, Cell, Tooltip, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 const Stats = () => {
   const [stats, setStats] = useState({});
@@ -48,6 +48,10 @@ const Stats = () => {
 
   const selectedStats = stats.dates?.find((d) => d.value === selectedDate)?.label;
   const dailyData = stats.data?.[selectedStats] || [];
+
+  // Filter out sites that have limits, i.e., only include those without a limit
+  const filteredDailyData = dailyData.filter((entry) => entry.limit === null);
+
   const totalTimeByDay = stats.dates?.map(({ label }) => ({
     date: label,
     totalTime: (stats.data[label]?.reduce((sum, { timeSpent }) => sum + timeSpent, 0) || 0),
@@ -72,13 +76,22 @@ const Stats = () => {
       {viewMode === "today" ? (
         <div className="h-48 mt-4">
           <h3 className="text-lg font-semibold">Time Spent on {selectedStats}</h3>
-          {dailyData.length > 0 ? (
+          {filteredDailyData.length > 0 ? (
             <>
               <div className="h-32 mt-4">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={dailyData} dataKey="timeSpent" nameKey="site" cx="50%" cy="50%" outerRadius={50} fill="#8884d8" label>
-                      {dailyData.map((_, index) => (
+                    <Pie
+                      data={filteredDailyData}
+                      dataKey="timeSpent"
+                      nameKey="site"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={50}
+                      fill="#8884d8"
+                      label
+                    >
+                      {filteredDailyData.map((_, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
@@ -91,7 +104,7 @@ const Stats = () => {
               <div className="mt-4">
                 <h4 className="font-semibold">Legend</h4>
                 <ul>
-                  {dailyData.map((entry, index) => (
+                  {filteredDailyData.map((entry, index) => (
                     <li key={entry.site} className="flex items-center space-x-2">
                       <div
                         className="w-4 h-4"
