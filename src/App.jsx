@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import './App.css'
 import { CiAlarmOn } from "react-icons/ci";
 import { BiStats } from "react-icons/bi";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 import browser from "webextension-polyfill";
 import Selector from "./components/Selector";
+import Modal from "./components/Modal"
 
 export default function Popup() {
   const [timeSpent, setTimeSpent] = useState({});
@@ -12,6 +13,10 @@ export default function Popup() {
   const [inputUrl, setInputUrl] = useState("");
   const [inputLimit, setInputLimit] = useState("");
   const [reset, setReset] = useState(false);
+  const [showModal, setShowModal] = useState(false)
+  let storedValue = inputUrl.replace(/^www\./, "");
+  const [modal, setModal] = useState({ url: "", limit: 0 })
+
 
   const today = new Date();
   const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -19,52 +24,53 @@ export default function Popup() {
     .toString()
     .padStart(2, '0')}-${today.getFullYear()}`;
 
-    useEffect(() => {
-      async function fetchData() {
-          try {
-              const data = await browser.storage.sync.get(["timeSpent", "limits"]);
-              setTimeSpent(data.timeSpent?.[fullDate] || {});
-              setLimits(data.limits || {});
-          } catch (error) {
-              console.error("Error fetching storage data:", error);
-          }
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await browser.storage.sync.get(["timeSpent", "limits"]);
+        setTimeSpent(data.timeSpent?.[fullDate] || {});
+        setLimits(data.limits || {});
+      } catch (error) {
+        console.error("Error fetching storage data:", error);
       }
-  
-      fetchData();
+    }
+
+    fetchData();
   }, []);
-  
+
 
   const setSiteLimit = async () => {
     if (!inputUrl || !inputLimit) return;
-  
-    let storedValue = inputUrl.replace(/^www\./, "");
-  
+    setShowModal(true)
+    setModal({ url: inputUrl, limit: inputLimit })
+
+
     try {
       const data = await browser.storage.sync.get("limits");
       let newLimits = { ...data.limits, [storedValue]: parseTimeString(inputLimit) };
-  
+
       await browser.storage.sync.set({ limits: newLimits });
-  
+
       setLimits(newLimits);
-      setInputUrl(""); 
+      setInputUrl("");
       setInputLimit("");
-  
+
       // Trigger a reset in Selector
       setReset((prev) => !prev);
-  
-      alert(`✅ A limit has been set on ${storedValue} for ${inputLimit}`);
-  
+
+      // alert(`✅ A limit has been set on ${storedValue} for ${inputLimit}`);
+
       console.log(`✅ Limit set for ${storedValue}: ${inputLimit} mins`);
     } catch (error) {
       console.error("❌ Error setting site limit:", error);
     }
   };
-  
-// Convert HH:MM:SS string to minutes (for consistency)
-const parseTimeString = (timeString) => {
+
+  // Convert HH:MM:SS string to minutes (for consistency)
+  const parseTimeString = (timeString) => {
     const [hh, mm, ss] = timeString.split(":").map(Number);
     return hh * 60 + mm + Math.floor(ss / 60); // Convert to total minutes
-};
+  };
 
 
 
@@ -73,12 +79,15 @@ const parseTimeString = (timeString) => {
     let value = e.target.value.trim();
 
     value = value.replace(/^(https?:\/\/)/, "");
-  
-    setInputUrl(value); 
+
+    setInputUrl(value);
   };
 
   return (
     <div className="bg-white  p-2 w-[350px] h-[400px] relative">
+      {showModal ? (
+        <Modal url={modal.url} limit={modal.limit} setShowModal={setShowModal} showModal={showModal} />
+      ) : null}
       <nav className="flex justify-between items-center font-semibold w-full border-b border-gray-200 py-4 ">
         <div className="flex flex-col gap-1">
           <h1 className="text-3xl">Lock-Time</h1>
@@ -86,15 +95,15 @@ const parseTimeString = (timeString) => {
         </div>
         <div className="flex gap-2">
           <Link to='/reminders'>
-          <button className="bg-black text-white rounded-xl flex justify-center items center p-1.5 font-bold text-xl drop-shadow-xl cursor-pointer"><CiAlarmOn /></button>
+            <button className="bg-black text-white rounded-xl flex justify-center items center p-1.5 font-bold text-xl drop-shadow-xl cursor-pointer"><CiAlarmOn /></button>
           </Link>
           <Link to='/stats'>
-          <button className="bg-black text-white rounded-xl flex justify-center items center p-1.5 font-bold text-xl drop-shadow-xl cursor-pointer"><BiStats /></button>
+            <button className="bg-black text-white rounded-xl flex justify-center items center p-1.5 font-bold text-xl drop-shadow-xl cursor-pointer"><BiStats /></button>
           </Link>
         </div>
       </nav>
       <ul>
-        
+
       </ul>
       {/* <div className="popup__routes">
         <button disabled = {true}>Set Reminder</button>
@@ -115,7 +124,7 @@ const parseTimeString = (timeString) => {
           />
         </div>
         <div className="relative w-full flex justify-center items-center">
-        <Selector inputLimit={inputLimit} setInputLimit={setInputLimit} reset={reset} />
+          <Selector inputLimit={inputLimit} setInputLimit={setInputLimit} reset={reset} />
         </div>
         <button onClick={setSiteLimit} className="bg-black shadow-xs text-white font-bold rounded-xl p-2   w-[75%] cursor-pointer outline-none">Set Limit</button>
       </div>

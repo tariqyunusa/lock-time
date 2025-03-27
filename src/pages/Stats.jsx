@@ -21,7 +21,7 @@ const Stats = () => {
             label: `${dayNames[date.getDay()]} - ${date.getDate().toString().padStart(2, "0")}-${(date.getMonth() + 1)
               .toString()
               .padStart(2, "0")}-${date.getFullYear()}`,
-            value: date.toISOString().split("T")[0], // ISO date format (YYYY-MM-DD) for comparison
+            value: date.toISOString().split("T")[0],
           };
         });
 
