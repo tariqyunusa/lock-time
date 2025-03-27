@@ -64,8 +64,8 @@ async function checkBlockSite(url) {
             return;
         }
 
-        let siteTime = timeSpent[fullDate][url] || 0;
-        let limit = limits[url];
+        let siteTime = timeSpent[fullDate][url] || 0; 
+        let limit = limits[url]; 
 
         console.log(`🔍 Checking site: ${url} - Spent: ${siteTime} mins (Limit: ${limit || "No Limit"})`);
 

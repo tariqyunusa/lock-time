@@ -53,21 +53,21 @@ const Stats = () => {
   return (
     <div className="bg-white  p-2 w-[350px] h-[400px] relative">
       <div className="w-full flex justify-between items-center border-b border-gray-200 py-4">
-      <h2 className="text-xl font-bold mb-4">Web Stats</h2>
+        <h2 className="text-xl font-bold mb-4">Web Stats</h2>
 
-{/* Dropdown to select date */}
-<select
-  value={selectedDate}
-  onChange={(e) => setSelectedDate(e.target.value)}
-  className="p-2 border border-gray-300 outline-none rounded-xl mb-4 shadow-sm text-gray-400"
->
-  {stats.dates &&
-    stats.dates.map(({ label, value }) => (
-      <option key={value} value={value}>
-        {label}
-      </option>
-    ))}
-</select>
+        {/* Dropdown to select date */}
+        <select
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          className="p-2 border border-gray-300 outline-none rounded-xl mb-4 shadow-sm text-gray-400"
+        >
+          {stats.dates &&
+            stats.dates.map(({ label, value }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+        </select>
       </div>
 
       {/* Display stats for the selected date */}

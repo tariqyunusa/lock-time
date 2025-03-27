@@ -4,6 +4,7 @@ import { CiAlarmOn } from "react-icons/ci";
 import { BiStats } from "react-icons/bi";
 import {Link} from "react-router-dom"
 import browser from "webextension-polyfill";
+import Selector from "./components/Selector";
 
 export default function Popup() {
   const [timeSpent, setTimeSpent] = useState({});
@@ -38,9 +39,13 @@ export default function Popup() {
     // Standardize URL: Remove "www."
     let storedValue = inputUrl.replace(/^www\./, "");
 
+    // Convert hh:mm:ss to total minutes
+    const [hh, mm, ss] = inputLimit.split(":").map(Number);
+    const totalMinutes = hh * 60 + mm + (ss > 0 ? 1 : 0); // Round up if seconds exist
+
     try {
         const data = await browser.storage.sync.get("limits");
-        let newLimits = { ...data.limits, [storedValue]: parseInt(inputLimit) };
+        let newLimits = { ...data.limits, [storedValue]: totalMinutes };
 
         await browser.storage.sync.set({ limits: newLimits });
 
@@ -48,11 +53,16 @@ export default function Popup() {
         setInputUrl(""); 
         setInputLimit("");
 
-        console.log(`✅ Limit set for ${storedValue}: ${inputLimit} mins`);
+        // Alert user
+        alert(`✅ Limit set for ${storedValue}: ${inputLimit} (hh:mm:ss)`);
+
+        console.log(`✅ Limit set for ${storedValue}: ${totalMinutes} minutes`);
     } catch (error) {
         console.error("❌ Error setting site limit:", error);
     }
 };
+
+
 
 
   const handleUrlChange = (e) => {
@@ -101,7 +111,7 @@ export default function Popup() {
           />
         </div>
         <div className="relative w-full flex justify-center items-center">
-          <input type="number" placeholder="Time limit (mins)" value={inputLimit} className="border border-gray-100 rounded-2xl p-2 shadow-xs transition:shadow duration-200 w-[75%] outline-none" onChange={(e) => setInputLimit(e.target.value)} />
+         <Selector inputLimit={inputLimit} setInputLimit={setInputLimit}/>
         </div>
         <button onClick={setSiteLimit} className="bg-black shadow-xs text-white font-bold rounded-2xl p-2   w-[75%] cursor-pointer outline-none">Set Limit</button>
       </div>
