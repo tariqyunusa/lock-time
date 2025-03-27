@@ -11,6 +11,7 @@ export default function Popup() {
   const [limits, setLimits] = useState({});
   const [inputUrl, setInputUrl] = useState("");
   const [inputLimit, setInputLimit] = useState("");
+  const [reset, setReset] = useState(false);
 
   const today = new Date();
   const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -35,31 +36,34 @@ export default function Popup() {
 
   const setSiteLimit = async () => {
     if (!inputUrl || !inputLimit) return;
-
-    // Standardize URL: Remove "www."
+  
     let storedValue = inputUrl.replace(/^www\./, "");
-
-    // Convert hh:mm:ss to total minutes
-    const [hh, mm, ss] = inputLimit.split(":").map(Number);
-    const totalMinutes = hh * 60 + mm + (ss > 0 ? 1 : 0); // Round up if seconds exist
-
+  
     try {
-        const data = await browser.storage.sync.get("limits");
-        let newLimits = { ...data.limits, [storedValue]: totalMinutes };
-
-        await browser.storage.sync.set({ limits: newLimits });
-
-        setLimits(newLimits);
-        setInputUrl(""); 
-        setInputLimit("");
-
-        // Alert user
-        alert(`✅ Limit set for ${storedValue}: ${inputLimit} (hh:mm:ss)`);
-
-        console.log(`✅ Limit set for ${storedValue}: ${totalMinutes} minutes`);
+      const data = await browser.storage.sync.get("limits");
+      let newLimits = { ...data.limits, [storedValue]: parseTimeString(inputLimit) };
+  
+      await browser.storage.sync.set({ limits: newLimits });
+  
+      setLimits(newLimits);
+      setInputUrl(""); 
+      setInputLimit("");
+  
+      // Trigger a reset in Selector
+      setReset((prev) => !prev);
+  
+      alert(`✅ A limit has been set on ${storedValue} for ${inputLimit}`);
+  
+      console.log(`✅ Limit set for ${storedValue}: ${inputLimit} mins`);
     } catch (error) {
-        console.error("❌ Error setting site limit:", error);
+      console.error("❌ Error setting site limit:", error);
     }
+  };
+  
+// Convert HH:MM:SS string to minutes (for consistency)
+const parseTimeString = (timeString) => {
+    const [hh, mm, ss] = timeString.split(":").map(Number);
+    return hh * 60 + mm + Math.floor(ss / 60); // Convert to total minutes
 };
 
 
@@ -111,7 +115,7 @@ export default function Popup() {
           />
         </div>
         <div className="relative w-full flex justify-center items-center">
-         <Selector inputLimit={inputLimit} setInputLimit={setInputLimit}/>
+        <Selector inputLimit={inputLimit} setInputLimit={setInputLimit} reset={reset} />
         </div>
         <button onClick={setSiteLimit} className="bg-black shadow-xs text-white font-bold rounded-2xl p-2   w-[75%] cursor-pointer outline-none">Set Limit</button>
       </div>

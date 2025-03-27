@@ -1,7 +1,7 @@
 import { motion, useSpring, useTransform } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 
-export default function Selector({ inputLimit, setInputLimit }) {
+export default function Selector({ inputLimit, setInputLimit, reset }) {
   let [hours, setHours] = useState(0);
   let [minutes, setMinutes] = useState(0);
   let [seconds, setSeconds] = useState(0);
@@ -13,6 +13,13 @@ export default function Selector({ inputLimit, setInputLimit }) {
       `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`
     );
   }, [hours, minutes, seconds, setInputLimit]);
+
+  // Reset timer when `reset` prop changes
+  useEffect(() => {
+    setHours(0);
+    setMinutes(0);
+    setSeconds(0);
+  }, [reset]);
 
   const handleMouseMove = (e) => {
     if (startY.current !== null) {
@@ -51,7 +58,7 @@ export default function Selector({ inputLimit, setInputLimit }) {
       if (newSeconds > 59) {
         setMinutes((prevMinutes) => {
           if (prevMinutes + 1 > 59) {
-            setHours((prevHours) => prevHours + 1); // Add an hour when minutes exceed 59
+            setHours((prevHours) => prevHours + 1);
             return 0;
           }
           return prevMinutes + 1;
@@ -62,7 +69,7 @@ export default function Selector({ inputLimit, setInputLimit }) {
       if (newSeconds < 0) {
         setMinutes((prevMinutes) => {
           if (prevMinutes - 1 < 0) {
-            setHours((prevHours) => Math.max(prevHours - 1, 0)); // Prevent negative hours
+            setHours((prevHours) => Math.max(prevHours - 1, 0));
             return 59;
           }
           return prevMinutes - 1;
