@@ -110,14 +110,14 @@ const parseTimeString = (timeString) => {
             type="text"
             value={inputUrl}
             onChange={handleUrlChange}
-            className="border border-gray-100 rounded-2xl p-2 shadow-xs transition:shadow duration-200 pl-[55px] w-[75%] outline-none"
+            className="border border-gray-100 rounded-xl p-2 shadow-xs transition:shadow duration-200 pl-[55px] w-[75%] outline-none"
           // placeholder="Enter website (e.g., youtube.com)"
           />
         </div>
         <div className="relative w-full flex justify-center items-center">
         <Selector inputLimit={inputLimit} setInputLimit={setInputLimit} reset={reset} />
         </div>
-        <button onClick={setSiteLimit} className="bg-black shadow-xs text-white font-bold rounded-2xl p-2   w-[75%] cursor-pointer outline-none">Set Limit</button>
+        <button onClick={setSiteLimit} className="bg-black shadow-xs text-white font-bold rounded-xl p-2   w-[75%] cursor-pointer outline-none">Set Limit</button>
       </div>
       <div className="flex justify-end items-center absolute bottom-0 right-0 p-2">
         <p className="font-light">Made with 🍵 by <a href="https://tareeq.vercel.app">Tariq Yunusa</a></p>

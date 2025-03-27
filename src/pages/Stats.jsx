@@ -72,7 +72,7 @@ const Stats = () => {
 
       {/* Display stats for the selected date */}
       {stats.data && stats.dates && (
-        <div>
+        <div className="max-h-[300px] overflow-y-auto">
           <h3 className="text-lg font-semibold mb-2">{stats.dates.find(d => d.value === selectedDate)?.label}</h3>
           <ul>
             {stats.data[stats.dates.find(d => d.value === selectedDate)?.label]?.length > 0 ? (
