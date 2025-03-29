@@ -14,7 +14,6 @@ export default function Selector({ inputLimit, setInputLimit, reset }) {
     );
   }, [hours, minutes, seconds, setInputLimit]);
 
-  // Reset timer when `reset` prop changes
   useEffect(() => {
     setHours(0);
     setMinutes(0);
@@ -43,12 +42,13 @@ export default function Selector({ inputLimit, setInputLimit, reset }) {
     window.removeEventListener("mouseup", handleMouseUp);
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "ArrowUp") {
-      changeTime(1);
-    } else if (e.key === "ArrowDown") {
-      changeTime(-1);
-    }
+  const handleInputChange = (e, type) => {
+    let value = parseInt(e.target.value, 10) || 0;
+    value = Math.max(0, Math.min(type === "hours" ? 99 : 59, value));
+
+    if (type === "hours") setHours(value);
+    if (type === "minutes") setMinutes(value);
+    if (type === "seconds") setSeconds(value);
   };
 
   const changeTime = (delta) => {
@@ -81,20 +81,6 @@ export default function Selector({ inputLimit, setInputLimit, reset }) {
     });
   };
 
-  useEffect(() => {
-    let element = containerRef.current;
-    if (element) {
-      element.focus();
-      element.addEventListener("keydown", handleKeyDown);
-    }
-
-    return () => {
-      if (element) {
-        element.removeEventListener("keydown", handleKeyDown);
-      }
-    };
-  }, []);
-
   return (
     <div
       ref={containerRef}
@@ -102,61 +88,25 @@ export default function Selector({ inputLimit, setInputLimit, reset }) {
       onMouseDown={handleMouseDown}
       tabIndex={0}
     >
-      <div className="flex w-1/2 items-end justify-center">
-        <Counter hours={hours} minutes={minutes} seconds={seconds} />
+      <div className="flex items-center text-5xl">
+        <EditableDigit value={hours} onChange={(e) => handleInputChange(e, "hours")} />
+        <span>:</span>
+        <EditableDigit value={minutes} onChange={(e) => handleInputChange(e, "minutes")} />
+        <span>:</span>
+        <EditableDigit value={seconds} onChange={(e) => handleInputChange(e, "seconds")} />
       </div>
     </div>
   );
 }
 
-function Counter({ hours, minutes, seconds }) {
+// Editable Input Field
+function EditableDigit({ value, onChange }) {
   return (
-    <div className="flex h-12 overflow-hidden">
-      <DigitColumn value={hours} place={10} />
-      <DigitColumn value={hours} place={1} />
-      <h1 className="text-5xl">:</h1>
-      <DigitColumn value={minutes} place={10} />
-      <DigitColumn value={minutes} place={1} />
-      <h1 className="text-5xl">:</h1>
-      <DigitColumn value={seconds} place={10} />
-      <DigitColumn value={seconds} place={1} />
-    </div>
-  );
-}
-
-function DigitColumn({ value, place }) {
-  let animatedValue = useSpring(value, { stiffness: 300, damping: 30 });
-
-  useEffect(() => {
-    animatedValue.set(value);
-  }, [value]);
-
-  return (
-    <div className="relative w-12">
-      {[...Array(10).keys()].map((i) => (
-        <Number key={i} place={place} mv={animatedValue} number={i} />
-      ))}
-    </div>
-  );
-}
-
-function Number({ place, mv, number }) {
-  let y = useTransform(mv, (latest) => {
-    let height = 48;
-    let placeValue = Math.floor(Math.abs(latest) / place) % 10;
-    let offset = (10 + number - placeValue) % 10;
-    let memo = offset * height;
-
-    if (offset > 5) {
-      memo -= 10 * height;
-    }
-
-    return memo;
-  });
-
-  return (
-    <motion.h1 style={{ y }} className="absolute inset-0 flex justify-center items-center text-5xl">
-      {number}
-    </motion.h1>
+    <input
+      type="text"
+      value={String(value).padStart(2, "0")}
+      onChange={onChange}
+      className="w-16 text-center bg-transparent border-none outline-none"
+    />
   );
 }

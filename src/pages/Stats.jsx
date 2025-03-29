@@ -102,15 +102,17 @@ const Stats = () => {
 
               {/* Legend below the Pie Chart */}
               <div className="mt-4">
-                <h4 className="font-semibold">Legend</h4>
-                <ul>
+                
+                <ul className="flex gap-2 flex-wrap">
                   {filteredDailyData.map((entry, index) => (
                     <li key={entry.site} className="flex items-center space-x-2">
                       <div
-                        className="w-4 h-4"
+                        className="p-2 rounded-3xl"
                         style={{ backgroundColor: COLORS[index % COLORS.length] }}
-                      ></div>
-                      <span>{entry.site}: {entry.timeSpent} mins</span>
+                      >
+                      <span className="text-white font-bold">{entry.site}</span>
+                        
+                      </div>
                     </li>
                   ))}
                 </ul>
