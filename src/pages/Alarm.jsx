@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import browser from "webextension-polyfill";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { IoTrashOutline } from "react-icons/io5";
+import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
 
 const Alarm = () => {
   const [limits, setLimits] = useState([]);
@@ -17,6 +18,21 @@ const Alarm = () => {
       setLimits(Object.entries(limits));
     } catch (error) {
       console.error("Error fetching limits:", error);
+    }
+  }
+
+  async function updateLimit(url, change) {
+    try {
+      const data = await browser.storage.sync.get("limits");
+      let limits = data.limits || {};
+
+      // Update the limit value (ensure it doesn't go below 1)
+      limits[url] = Math.max(1, (limits[url] || 0) + change);
+
+      await browser.storage.sync.set({ limits });
+      setLimits(Object.entries(limits));
+    } catch (error) {
+      console.error("Error updating limit:", error);
     }
   }
 
@@ -47,7 +63,7 @@ const Alarm = () => {
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-auto scrollbar-none">
+      <div className="flex-1 overflow-auto">
         {limits.length > 0 ? (
           <div className="rounded-lg shadow">
             <table className="w-full text-left">
@@ -60,10 +76,29 @@ const Alarm = () => {
               </thead>
               <tbody>
                 {limits.map(([url, limit], i) => (
-                  <tr key={i} >
+                  <tr key={i} className="hover:bg-gray-100">
                     <td className="p-2 break-all text-base">{url}</td>
-                    <td className="p-2 text-center text-base">{limit}</td>
+                    <td className="p-2 text-center text-base flex items-center justify-center gap-2">
+                      {/* Decrease Limit */}
+                      <button 
+                        onClick={() => updateLimit(url, -1)} 
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <IoRemoveCircleOutline size={18} />
+                      </button>
+
+                      {limit}
+
+                      {/* Increase Limit */}
+                      <button 
+                        onClick={() => updateLimit(url, 1)} 
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <IoAddCircleOutline size={18} />
+                      </button>
+                    </td>
                     <td className="p-2 text-center text-base">
+                      {/* Remove Limit */}
                       <button 
                         onClick={() => removeLimit(url)} 
                         className="text-red-500 hover:text-red-700 cursor-pointer"
