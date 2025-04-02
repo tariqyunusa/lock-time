@@ -24,9 +24,16 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 // ⏰ Alarm listener to update time spent
 browser.alarms.onAlarm.addListener(async (alarm) => {
     if (alarm.name === "trackTime") {
+        // Get active tab in the current window
         const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-
         if (tabs.length === 0 || !tabs[0].url) return;
+
+        // Check if the window is focused
+        const windowInfo = await browser.windows.get(tabs[0].windowId);
+        if (!windowInfo.focused) {
+            console.log("⏸️ Skipping tracking: Window is not focused");
+            return;
+        }
 
         const url = cleanUrl(tabs[0].url);
         const fullDate = getCurrentFormattedDate();
@@ -49,6 +56,7 @@ browser.alarms.onAlarm.addListener(async (alarm) => {
         console.log("👋 KeepAlive: Extension is still active");
     }
 });
+
 
 // 🚫 Check if site should be blocked
 async function checkBlockSite(url) {
