@@ -6,6 +6,8 @@ import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
 
 const Alarm = () => {
   const [limits, setLimits] = useState([]);
+  const [editingUrl, setEditingUrl] = useState(null); // Track which URL is being edited
+  const [editingTime, setEditingTime] = useState(""); // Track the new time
 
   useEffect(() => {
     fetchData();
@@ -21,14 +23,11 @@ const Alarm = () => {
     }
   }
 
-  async function updateLimit(url, change) {
+  async function updateLimit(url, newLimit) {
     try {
       const data = await browser.storage.sync.get("limits");
       let limits = data.limits || {};
-
-      // Update the limit value (ensure it doesn't go below 1)
-      limits[url] = Math.max(1, (limits[url] || 0) + change);
-
+      limits[url] = Math.max(1, newLimit); // Ensure the limit doesn't go below 1
       await browser.storage.sync.set({ limits });
       setLimits(Object.entries(limits));
     } catch (error) {
@@ -52,17 +51,38 @@ const Alarm = () => {
     window.location.href = "/index.html";
   };
 
+  const handleTimeChange = (e) => {
+    setEditingTime(e.target.value);
+  };
+
+  const handleTimeBlur = (url) => {
+    const newLimit = parseInt(editingTime, 10);
+    if (!isNaN(newLimit)) {
+      updateLimit(url, newLimit);
+    }
+    setEditingUrl(null);
+    setEditingTime("");
+  };
+
+  const handleTimeKeyDown = (e, url) => {
+    if (e.key === "Enter") {
+      const newLimit = parseInt(editingTime, 10);
+      if (!isNaN(newLimit)) {
+        updateLimit(url, newLimit);
+      }
+      setEditingUrl(null);
+      setEditingTime("");
+    }
+  };
+
   return (
     <div className="bg-white p-2 w-[350px] h-[400px] relative flex flex-col">
-      {/* Header */}
       <div className="w-full flex items-center gap-2 py-4">
         <button className="text-xl text-black cursor-pointer outline-none" onClick={backToHome}>
           <IoMdArrowRoundBack />
         </button>
         <h2 className="text-xl font-bold">Limits</h2>
       </div>
-
-      {/* Scrollable Content */}
       <div className="flex-1 overflow-auto">
         {limits.length > 0 ? (
           <div className="rounded-lg shadow">
@@ -76,29 +96,44 @@ const Alarm = () => {
               </thead>
               <tbody>
                 {limits.map(([url, limit], i) => (
-                  <tr key={i} className="hover:bg-gray-100">
+                  <tr key={i}>
                     <td className="p-2 break-all text-base">{url}</td>
                     <td className="p-2 text-center text-base flex items-center justify-center gap-2">
-                      {/* Decrease Limit */}
                       <button 
-                        onClick={() => updateLimit(url, -1)} 
+                        onClick={() => updateLimit(url, limit - 1)} 
                         className="text-gray-500 hover:text-gray-700"
                       >
                         <IoRemoveCircleOutline size={18} />
                       </button>
 
-                      {limit}
-
-                      {/* Increase Limit */}
+                      {editingUrl === url ? (
+                        <input
+                          type="number"
+                          value={editingTime}
+                          onChange={handleTimeChange}
+                          onBlur={() => handleTimeBlur(url)}
+                          onKeyDown={(e) => handleTimeKeyDown(e, url)}
+                          className="text-center w-16 p-1 border border-gray-300 rounded-md"
+                        />
+                      ) : (
+                        <span
+                          onClick={() => {
+                            setEditingUrl(url);
+                            setEditingTime(limit.toString());
+                          }}
+                          className="cursor-pointer"
+                        >
+                          {limit}
+                        </span>
+                      )}
                       <button 
-                        onClick={() => updateLimit(url, 1)} 
+                        onClick={() => updateLimit(url, limit + 1)} 
                         className="text-gray-500 hover:text-gray-700"
                       >
                         <IoAddCircleOutline size={18} />
                       </button>
                     </td>
                     <td className="p-2 text-center text-base">
-                      {/* Remove Limit */}
                       <button 
                         onClick={() => removeLimit(url)} 
                         className="text-red-500 hover:text-red-700 cursor-pointer"

@@ -3,6 +3,7 @@ import browser from "webextension-polyfill";
 import {
   LineChart, Line, PieChart, Pie, Cell, Tooltip, ResponsiveContainer, XAxis, YAxis
 } from "recharts";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 const Stats = () => {
   const [stats, setStats] = useState({});
@@ -64,27 +65,31 @@ const Stats = () => {
   })) || [];
 
   const formatTime = (minutes) => {
-    const totalSeconds = minutes * 60; // Convert minutes to seconds
+    const totalSeconds = minutes * 60;
     const hrs = Math.floor(totalSeconds / 3600);
     const mins = Math.floor((totalSeconds % 3600) / 60);
     const secs = totalSeconds % 60;
     return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
-  
-
-  const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#ffbb28", "#0088FE", "#00C49F"];
+  const toHome = () => {
+    window.location.href = "/index.html"
+  }
+  // const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#ffbb28", "#0088FE", "#00C49F"];
 
   return (
     <div className="bg-white p-4 w-[350px] h-[400px] relative overflow-hidden">
       <div className="w-full flex justify-between items-center border-b border-gray-200 py-4">
+        <div className="flex gap-1.5 items-center ">
+           <button onClick={toHome} className="text-xl text-black cursor-pointer outline-none"> <IoMdArrowRoundBack /></button>
         <h2 className="text-xl font-bold">Web Stats</h2>
+        </div>
         <select
           value={viewMode}
           onChange={(e) => setViewMode(e.target.value)}
           className="p-2 border border-gray-300 outline-none rounded-xl shadow-sm text-gray-400"
         >
           <option value="today">Today</option>
-          <option value="last7days">Last 7 Days</option>
+          {/* <option value="last7days">Last 7 Days</option> */}
         </select>
       </div>
       <div className="h-full w-full overflow-scroll scrollbar-none" >
