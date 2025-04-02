@@ -90,14 +90,14 @@ const Stats = () => {
       <div className="h-full w-full overflow-scroll scrollbar-none" >
       {viewMode === "today" ? (
         <div className="h-48 mt-4">
-          <h3 className="text-lg font-semibold">Time Spent on {selectedStats}</h3>
+          <h3 className="text-lg font-semibold">Time Spent Today</h3>
           <div className="mt-4 p-4 bg-black flex flex-col text-white rounded-2xl">
             <p>Time Spent Today</p>
           
           <h1 className="text-2xl font-bold">{formatTime(totalAccumulatedTime)}</h1>
           </div>
 
-          <div className="h-32 mt-4">
+          {/* <div className="h-32 mt-4">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -117,17 +117,17 @@ const Stats = () => {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
-          </div>
+          </div> */}
 
-          <div className="mt-4 pb-16">
+          <div className="mt-2 pb-16">
             <ul className="flex gap-2 flex-wrap py-4">
               {dailyData.map((entry, index) => (
                 <li key={entry.site} className="flex items-center space-x-2">
                   <div
-                    className="p-2 rounded-3xl"
-                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                    className="p-2 rounded-3xl bg-black"
+                    // style={{ backgroundColor: COLORS[index % COLORS.length] }}
                   >
-                    <span className="text-white font-bold">{entry.site}</span>
+                    <span className="text-white ">{entry.site}: {entry.timeSpent} mins</span>
                   </div>
                 </li>
               ))}
