@@ -88,18 +88,27 @@ export default function Selector({ inputLimit, setInputLimit, reset }) {
       onMouseDown={handleMouseDown}
       tabIndex={0}
     >
-      <div className="flex items-center text-5xl">
+      <div className="flex text-center text-5xl">
+        <div className="flex items-center flex-col">
         <EditableDigit value={hours} onChange={(e) => handleInputChange(e, "hours")} />
+          <p className="text-gray-200 text-xl">HR</p>
+        </div>
         <span>:</span>
+        <div>
         <EditableDigit value={minutes} onChange={(e) => handleInputChange(e, "minutes")} />
+        <p className="text-gray-200 text-xl">MIN</p>
+        </div>
         <span>:</span>
+        <div>
         <EditableDigit value={seconds} onChange={(e) => handleInputChange(e, "seconds")} />
+        <p className="text-gray-200 text-xl">SS</p>
+        </div>
       </div>
     </div>
   );
 }
 
-// Editable Input Field
+
 function EditableDigit({ value, onChange }) {
   return (
     <input

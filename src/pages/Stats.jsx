@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import browser from "webextension-polyfill";
-import {
-  LineChart, Line, PieChart, Pie, Cell, Tooltip, ResponsiveContainer, XAxis, YAxis
-} from "recharts";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { LineChart, Line, Tooltip, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 const Stats = () => {
   const [stats, setStats] = useState({});
@@ -14,9 +12,8 @@ const Stats = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await browser.storage.sync.get(["timeSpent", "limits"]);
+        const data = await browser.storage.sync.get(["timeSpent"]);
         const timeSpent = data.timeSpent || {};
-        const limits = data.limits || {};
 
         const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         const last7Days = Array.from({ length: 7 }, (_, i) => {
@@ -40,12 +37,10 @@ const Stats = () => {
         const formattedStats = {};
         last7Days.forEach(({ label }) => {
           const dayData = timeSpent[label] || {};
-          const allSites = new Set([...Object.keys(dayData), ...Object.keys(limits)]);
 
-          formattedStats[label] = Array.from(allSites).map((site) => ({
+          formattedStats[label] = Object.entries(dayData).map(([site, time]) => ({
             site,
-            timeSpent: dayData[site] || 0,
-            limit: limits[site] || null,
+            timeSpent: time,
           }));
         });
 
@@ -71,17 +66,17 @@ const Stats = () => {
     const secs = totalSeconds % 60;
     return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
+  
   const toHome = () => {
-    window.location.href = "/index.html"
-  }
-  // const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#ffbb28", "#0088FE", "#00C49F"];
+    window.location.href = "/index.html";
+  };
 
   return (
     <div className="bg-white p-4 w-[350px] h-[400px] relative overflow-hidden">
       <div className="w-full flex justify-between items-center border-b border-gray-200 py-4">
-        <div className="flex gap-1.5 items-center ">
-           <button onClick={toHome} className="text-xl text-black cursor-pointer outline-none"> <IoMdArrowRoundBack /></button>
-        <h2 className="text-xl font-bold">Web Stats</h2>
+        <div className="flex gap-1.5 items-center">
+          <button onClick={toHome} className="text-xl text-black cursor-pointer outline-none"> <IoMdArrowRoundBack /></button>
+          <h2 className="text-xl font-bold">Web Stats</h2>
         </div>
         <select
           value={viewMode}
@@ -89,72 +84,42 @@ const Stats = () => {
           className="p-2 border border-gray-300 outline-none rounded-xl shadow-sm text-gray-400"
         >
           <option value="today">Today</option>
-          {/* <option value="last7days">Last 7 Days</option> */}
         </select>
       </div>
-      <div className="h-full w-full overflow-scroll scrollbar-none" >
-      {viewMode === "today" ? (
-        <div className="h-48 mt-4">
-          <h3 className="text-lg font-semibold">Time Spent Today</h3>
-          <div className="mt-4 p-4 bg-black flex flex-col text-white rounded-2xl">
-            <p>Time Spent Today</p>
-          
-          <h1 className="text-2xl font-bold">{formatTime(totalAccumulatedTime)}</h1>
+      <div className="h-full w-full overflow-scroll scrollbar-none">
+        {viewMode === "today" ? (
+          <div className="h-48 mt-4">
+            <h3 className="text-lg font-semibold">Time Spent Today</h3>
+            <div className="mt-4 p-4 bg-black flex flex-col text-white rounded-2xl">
+              <p>Time Spent Today</p>
+              <h1 className="text-2xl font-bold">{formatTime(totalAccumulatedTime)}</h1>
+            </div>
+            <div className="mt-2 pb-16">
+              <ul className="flex gap-2 flex-wrap py-4">
+                {dailyData.map((entry) => (
+                  <li key={entry.site} className="flex items-center space-x-2">
+                    <div className="p-2 rounded-3xl bg-black">
+                      <span className="text-white">{entry.site}: {entry.timeSpent} mins</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-
-          {/* <div className="h-32 mt-4">
+        ) : (
+          <div className="h-48 mt-4">
+            <h3 className="text-lg font-semibold">Total Time Spent (Last 7 Days)</h3>
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={dailyData}
-                  dataKey="timeSpent"
-                  nameKey="site"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={50}
-                  fill="#8884d8"
-                  label
-                >
-                  {dailyData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
+              <LineChart data={totalTimeByDay}>
+                <XAxis dataKey="date" />
+                <YAxis />
                 <Tooltip />
-              </PieChart>
+                <Line type="monotone" dataKey="totalTime" stroke="#8884d8" strokeWidth={2} />
+              </LineChart>
             </ResponsiveContainer>
-          </div> */}
-
-          <div className="mt-2 pb-16">
-            <ul className="flex gap-2 flex-wrap py-4">
-              {dailyData.map((entry, index) => (
-                <li key={entry.site} className="flex items-center space-x-2">
-                  <div
-                    className="p-2 rounded-3xl bg-black"
-                    // style={{ backgroundColor: COLORS[index % COLORS.length] }}
-                  >
-                    <span className="text-white ">{entry.site}: {entry.timeSpent} mins</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
           </div>
-        </div>
-      ) : (
-        <div className="h-48 mt-4">
-          <h3 className="text-lg font-semibold">Total Time Spent (Last 7 Days)</h3>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={totalTimeByDay}>
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="totalTime" stroke="#8884d8" strokeWidth={2} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      )}
+        )}
       </div>
-
-      
     </div>
   );
 };

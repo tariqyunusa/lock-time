@@ -1,16 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blocked!</title>
-  <style>
-    body { text-align: center; font-family: Arial, sans-serif; }
-    h1 { color: red; }
-  </style>
-</head>
-<body>
-  <h1>You've exceeded your time limit!</h1>
-  <p>Take a break and come back later.</p>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blocked!</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #000047;
+        color: #4f8f99;
+        font-family: "Courier New", monospace;
+      }
+      .grid-container {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(20, 50px);
+        grid-gap: 5px;
+      }
+      .grid-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        border-radius: 5px;
+      }
+      .grid-parent{
+        width: 100vw;
+        height: 70vh;
+        border-top: #4f8f99 3px solid;
+        border-bottom: #4f8f99 3px solid;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid-parent">
+    <div class="grid-container" id="grid-container"></div>
+
+    </div>
+    <script src="script.js" defer></script>
+  </body>
 </html>

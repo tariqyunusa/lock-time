@@ -77,15 +77,15 @@ const Alarm = () => {
 
   return (
     <div className="bg-white p-2 w-[350px] h-[400px] relative flex flex-col">
-      <div className="w-full flex items-center gap-2 py-4">
+      <div className="w-full flex items-center gap-2 py-4 border-b border-gray-300 ">
         <button className="text-xl text-black cursor-pointer outline-none" onClick={backToHome}>
           <IoMdArrowRoundBack />
         </button>
         <h2 className="text-xl font-bold">Limits</h2>
       </div>
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto scrollbar-none">
         {limits.length > 0 ? (
-          <div className="rounded-lg shadow">
+          <div className="rounded-lg  mt-4">
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-black text-white">
