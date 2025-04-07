@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import browser from "webextension-polyfill";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { LineChart, Line, Tooltip, ResponsiveContainer, XAxis, YAxis } from "recharts";
-
+import { IoLinkOutline } from "react-icons/io5";
 const Stats = () => {
   const [stats, setStats] = useState({});
   const [selectedDate, setSelectedDate] = useState("");
@@ -29,11 +29,11 @@ const Stats = () => {
 
         const today = new Date();
         const todayLabel = `${dayNames[today.getDay()]} - ${today.getDate().toString().padStart(2, "0")}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${today.getFullYear()}`;
-        
+
         const todayData = timeSpent[todayLabel] || {};
         const totalTimeToday = Object.values(todayData).reduce((sum, value) => sum + value, 0);
         setTotalAccumulatedTime(totalTimeToday);
-        
+
         const formattedStats = {};
         last7Days.forEach(({ label }) => {
           const dayData = timeSpent[label] || {};
@@ -66,10 +66,17 @@ const Stats = () => {
     const secs = totalSeconds % 60;
     return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
-  
+
   const toHome = () => {
     window.location.href = "/index.html";
   };
+  const getCleanSiteName = (url) => {
+    const hostname = url.replace(/^https?:\/\//, "").split("/")[0];
+    const parts = hostname.split(".");
+    let name = parts.length >= 2 ? parts[parts.length - 2] : hostname;
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  };
+  
 
   return (
     <div className="bg-white p-4 w-[350px] h-[400px] relative overflow-hidden">
@@ -95,15 +102,21 @@ const Stats = () => {
               <h1 className="text-2xl font-bold">{formatTime(totalAccumulatedTime)}</h1>
             </div>
             <div className="mt-2 pb-16">
-              <ul className="flex gap-2 flex-wrap py-4">
+              <div className="flex gap-2 flex-wrap py-4">
                 {dailyData.map((entry) => (
-                  <li key={entry.site} className="flex items-center space-x-2">
-                    <div className="p-2 rounded-3xl bg-black">
-                      <span className="text-white">{entry.site}: {entry.timeSpent} mins</span>
+                  <div key={entry.site} className="flex justify-between items-center w-full">
+                    <div className="flex items-center gap-2 ">
+                      <span className="p-4 flex justify-between items-center rounded-full bg-black text-white"><IoLinkOutline /></span>
+                      <div className="flex flex-col">
+                      <h1 className="text-xl font-bold">{getCleanSiteName(entry.site)}</h1>
+                      <h1 className="font-semibold">{entry.timeSpent} mins</h1>
+                      </div>
                     </div>
-                  </li>
+                    <div>
+                    </div>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           </div>
         ) : (
