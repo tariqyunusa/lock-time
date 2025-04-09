@@ -88,7 +88,7 @@ const Alarm = () => {
           <div className="rounded-lg  mt-4">
             <table className="w-full text-left">
               <thead>
-                <tr className="bg-black text-white">
+                <tr className=" text-black">
                   <th className="p-2">URL</th>
                   <th className="p-2 text-center">Time (min)</th>
                   <th className="p-2 text-center">Action</th>
@@ -96,8 +96,8 @@ const Alarm = () => {
               </thead>
               <tbody>
                 {limits.map(([url, limit], i) => (
-                  <tr key={i}>
-                    <td className="p-2 break-all text-base">{url}</td>
+                  <tr key={i} className="flex items-center justify-between">
+                    <td className="p-2 break-all text-2xl font-bold">{url}</td>
                     <td className="p-2 text-center text-base flex items-center justify-center gap-2">
                       <button 
                         onClick={() => updateLimit(url, limit - 1)} 

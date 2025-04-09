@@ -10,6 +10,7 @@ const gridContainer = document.getElementById("grid-container");
           const gridItem = document.createElement("div");
           gridItem.classList.add("grid-item");
           gridItem.textContent = generateRandomNumber();
+          gridItem.style.animationDelay = `${Math.random() * 3}s`;
           gridContainer.appendChild(gridItem);
         }
       }

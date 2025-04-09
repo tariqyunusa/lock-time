@@ -96,7 +96,7 @@ const Stats = () => {
       <div className="h-full w-full overflow-scroll scrollbar-none">
         {viewMode === "today" ? (
           <div className="h-48 mt-4">
-            <h3 className="text-lg font-semibold">Time Spent Today</h3>
+            <h3 className="text-lg font-semibold">Total Time Spent</h3>
             <div className="mt-4 p-4 bg-black flex flex-col text-white rounded-2xl">
               <p>Time Spent Today</p>
               <h1 className="text-2xl font-bold">{formatTime(totalAccumulatedTime)}</h1>

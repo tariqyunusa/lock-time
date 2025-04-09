@@ -24,6 +24,7 @@
         display: grid;
         grid-template-columns: repeat(20, 50px);
         grid-gap: 5px;
+        filter: brightness(0.7);
       }
       .grid-item {
         display: flex;
@@ -31,6 +32,9 @@
         align-items: center;
         font-size: 18px;
         border-radius: 5px;
+        animation: float 3s ease-in-out infinite;
+        transition: transform 0.3s;
+        font-weight: bold;
       }
       .grid-parent{
         width: 100vw;
@@ -59,6 +63,18 @@
         left: 0;
         display: flex;
         align-items: center;
+      }
+      @keyframes float {
+        0%{
+          transform: translateY(0)
+
+        }
+        50%{
+          transform: translateY(-10px);
+        }
+        100%{
+          transform: translateY(0);
+        }
       }
     </style>
   </head>
