@@ -17,7 +17,7 @@ function createGrid(rows, cols) {
   }
 }
 
-createGrid(10, 29);
+createGrid(8, 24);
 
 const kierQuotes = [
   "There is no higher calling than the work before you.",

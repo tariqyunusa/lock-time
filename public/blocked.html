@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Blocked!</title>
     <style>
+      @font-face {
+        font-family: 'sevr';
+        src: url('./FormaDJRDisplay-Regular-Testing.ttf') format('truetype');
+        font-weight: 500;
+        
+      }
+      @font-face {
+        font-family: 'sevr';
+        src: url('./FormaDJRDeck-Medium-Testing.ttf') format('truetype');
+        font-style: 700;
+      }
       * {
         margin: 0;
         padding: 0;
@@ -15,25 +26,27 @@
         justify-content: center;
         align-items: center;
         height: 100vh;
-        background-color: rgba(0, 0, 0, 0.85);
-        color: #4f8f99;
+        background-color: #fff;
+        color: #000;
         font-family: "Courier New", monospace;
+        overflow: hidden;
       }
 
       nav {
         width: 100vw;
         height: 15vh;
-        padding-inline: 2rem;
+        padding: 2rem;
         position: fixed;
         top: 0;
         left: 0;
         display: flex;
         align-items: center;
+        justify-content: space-between;
       }
 
       .logo {
-        width: 200px;
-        height: 100px;
+        width: 180px;
+        height: 90px;
       }
 
       .logo__img {
@@ -41,12 +54,17 @@
         height: 100%;
         object-fit: cover;
       }
+      .reminder{
+        font-family: 'sevr', sans-serif;
+        font-weight: 700;
+        font-size: 2rem;
+      }
 
       .grid-parent {
         width: 100vw;
         height: 70vh;
-        border-top: #4f8f99 3px solid;
-        border-bottom: #4f8f99 3px solid;
+        border-top: #000 3px solid;
+        border-bottom: #000 3px solid;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -80,7 +98,7 @@
         width: 70vw;
         max-width: 800px;
         height: auto;
-        background-color: rgba(0, 0, 0, 0.85);
+        background-color: #111;
         border-radius: 24px;
         padding: 2rem;
         position: absolute;
@@ -91,9 +109,11 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+        color: #fff;
         text-align: center;
+        font-family: 'sevr', sans-serif;
         /* box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); */
-        border: #4f8f99 3px solid;
+        border: #000 3px solid;
       }
 
       .quote-text {
@@ -106,7 +126,7 @@
 
       .kier-signature {
         font-size: 1rem;
-        color: #4f8f99;
+        color: #ffff;
         margin-top: 1rem;
         font-style: italic;
         text-align: end;
@@ -122,12 +142,14 @@
         100% {
           transform: translateY(0);
         }
+
       }
     </style>
   </head>
   <body>
     <nav>
-      <div class="logo"><img src="./Lumon Globe.png" alt="lumon__logo" class="logo__img" /></div>
+      <div class="logo"><img src="./Lumon.png" alt="lumon__logo" class="logo__img" /></div>
+      <h1 class="reminder">You have reached your Limit for today.</h1>
     </nav>
 
     <div class="grid-parent">
