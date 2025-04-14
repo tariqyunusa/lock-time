@@ -2,18 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Blocked!</title>
     <style>
       @font-face {
-        font-family: 'sevr';
-        src: url('./FormaDJRDisplay-Regular-Testing.ttf') format('truetype');
+        font-family: "sevr";
+        src: url("./FormaDJRDisplay-Regular-Testing.ttf") format("truetype");
         font-weight: 500;
-        
       }
       @font-face {
-        font-family: 'sevr';
-        src: url('./FormaDJRDeck-Medium-Testing.ttf') format('truetype');
+        font-family: "sevr";
+        src: url("./FormaDJRDeck-Medium-Testing.ttf") format("truetype");
         font-style: 700;
       }
       * {
@@ -54,8 +53,8 @@
         height: 100%;
         object-fit: cover;
       }
-      .reminder{
-        font-family: 'sevr', sans-serif;
+      .reminder {
+        font-family: "sevr", sans-serif;
         font-weight: 700;
         font-size: 2rem;
       }
@@ -76,9 +75,7 @@
         width: 100%;
         height: 100%;
         display: grid;
-        grid-template-columns: repeat(20, 50px);
-        grid-auto-rows: 50px;
-        grid-gap: 5px;
+        gap: 5px;
         opacity: 1;
         filter: blur(1px) brightness(0.7);
         z-index: 1;
@@ -111,7 +108,7 @@
         justify-content: center;
         color: #fff;
         text-align: center;
-        font-family: 'sevr', sans-serif;
+        font-family: "sevr", sans-serif;
         /* box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); */
         border: #000 3px solid;
       }
@@ -134,7 +131,7 @@
 
       @keyframes float {
         0% {
-          transform: translateY(0)
+          transform: translateY(0);
         }
         50% {
           transform: translateY(-10px);
@@ -142,14 +139,15 @@
         100% {
           transform: translateY(0);
         }
-
       }
     </style>
   </head>
   <body>
     <nav>
-      <div class="logo"><img src="./Lumon.png" alt="lumon__logo" class="logo__img" /></div>
-      <h1 class="reminder">You have reached your Limit for today.</h1>
+      <div class="logo">
+        <img src="./Lumon.png" alt="lumon__logo" class="logo__img" />
+      </div>
+      <h1 class="reminder">You have reached your limit for today.</h1>
     </nav>
 
     <div class="grid-parent">
@@ -160,8 +158,6 @@
       <div class="grid-container" id="grid-container"></div>
     </div>
 
-    <script src="./script.js" defer>
-     
-    </script>
+    <script src="./script.js" defer></script>
   </body>
 </html>

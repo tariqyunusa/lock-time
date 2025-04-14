@@ -4,9 +4,21 @@ function generateRandomNumber() {
   return Math.floor(Math.random() * 10);
 }
 
-function createGrid(rows, cols) {
-  gridContainer.style.gridTemplateColumns = `repeat(${cols}, 50px)`;
-  gridContainer.style.gridTemplateRows = `repeat(${rows}, 50px)`;
+function createResponsiveGrid() {
+ 
+  gridContainer.innerHTML = "";
+
+  const containerWidth = gridContainer.offsetWidth;
+  const containerHeight = gridContainer.offsetHeight;
+
+  const cellSize = 50; 
+  const gap = 5; 
+
+  const cols = Math.floor(containerWidth / (cellSize + gap));
+  const rows = Math.floor(containerHeight / (cellSize + gap));
+
+  gridContainer.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
+  gridContainer.style.gridTemplateRows = `repeat(${rows}, ${cellSize}px)`;
 
   for (let i = 0; i < rows * cols; i++) {
     const gridItem = document.createElement("div");
@@ -17,7 +29,13 @@ function createGrid(rows, cols) {
   }
 }
 
-createGrid(8, 24);
+createResponsiveGrid();
+
+
+window.addEventListener("resize", () => {
+  createResponsiveGrid();
+});
+
 
 const kierQuotes = [
   "There is no higher calling than the work before you.",
