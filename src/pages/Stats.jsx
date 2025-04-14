@@ -3,6 +3,7 @@ import browser from "webextension-polyfill";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { LineChart, Line, Tooltip, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { IoLinkOutline } from "react-icons/io5";
+import {Link} from 'react-router-dom'
 const Stats = () => {
   const [stats, setStats] = useState({});
   const [selectedDate, setSelectedDate] = useState("");
@@ -104,7 +105,8 @@ const Stats = () => {
             <div className="mt-2 pb-16">
               <div className="flex gap-2 flex-wrap py-4">
                 {dailyData.map((entry) => (
-                  <div key={entry.site} className="flex justify-between items-center w-full">
+                  <Link key={entry.site} to='/reminders'>
+                  <div className="flex justify-between items-center w-full">
                     <div className="flex items-center gap-2 ">
                       <span className="p-4 flex justify-between items-center rounded-full bg-black text-white"><IoLinkOutline /></span>
                       <div className="flex flex-col">
@@ -115,6 +117,7 @@ const Stats = () => {
                     <div>
                     </div>
                   </div>
+                  </Link>
                 ))}
               </div>
             </div>
