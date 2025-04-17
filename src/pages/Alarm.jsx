@@ -96,15 +96,15 @@ const Alarm = () => {
               </thead>
               <tbody>
                 {limits.map(([url, limit], i) => (
-                  <tr key={i} className="flex items-center justify-between">
+                  <tr key={i} className="">
                     <td className="p-2 break-all text-2xl font-bold">{url}</td>
                     <td className="p-2 text-center text-base flex items-center justify-center gap-2">
-                      <button 
+                      {/* <button 
                         onClick={() => updateLimit(url, limit - 1)} 
                         className="text-gray-500 hover:text-gray-700"
                       >
                         <IoRemoveCircleOutline size={18} />
-                      </button>
+                      </button> */}
 
                       {editingUrl === url ? (
                         <input
@@ -121,17 +121,17 @@ const Alarm = () => {
                             setEditingUrl(url);
                             setEditingTime(limit.toString());
                           }}
-                          className="cursor-pointer"
+                          className="cursor-pointer border border-gray-300  w-16 p-1 rounded-md"
                         >
                           {limit}
                         </span>
                       )}
-                      <button 
+                      {/* <button 
                         onClick={() => updateLimit(url, limit + 1)} 
                         className="text-gray-500 hover:text-gray-700"
                       >
                         <IoAddCircleOutline size={18} />
-                      </button>
+                      </button> */}
                     </td>
                     <td className="p-2 text-center text-base">
                       <button 

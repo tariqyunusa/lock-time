@@ -105,9 +105,9 @@ const Stats = () => {
             <div className="mt-2 pb-16">
               <div className="flex gap-2 flex-wrap py-4">
                 {dailyData.map((entry) => (
-                  <Link key={entry.site} to='/reminders'>
+                  <Link key={entry.site} to='/reminders' className="w-full">
                   <div className="flex justify-between items-center w-full">
-                    <div className="flex items-center gap-2 ">
+                    <div className="flex items-center gap-2 w-full">
                       <span className="p-4 flex justify-between items-center rounded-full bg-black text-white"><IoLinkOutline /></span>
                       <div className="flex flex-col">
                       <h1 className="text-xl font-bold">{getCleanSiteName(entry.site)}</h1>
