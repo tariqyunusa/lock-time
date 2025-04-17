@@ -11,9 +11,9 @@ import {motion, AnimatePresence} from "framer-motion"
 export const AnimateWrapper = ({children}) => {
   return(
     <motion.div
-    initial={{opacity:0, y: 50}}
+    initial={{opacity:0, y: 15}}
     animate={{opacity:1, y: 0}}
-    exit={{opacity:0, y: -50}}
+    exit={{opacity:0, y: -15}}
     >
       {children}
     </motion.div>
@@ -23,9 +23,9 @@ export const AnimateWrapper = ({children}) => {
 export const SideWrapper = ({children}) => {
 return(
   <motion.div 
-  initial={{opacity: 0, x: 50}}
+  initial={{opacity: 0, x: 15}}
   animate={{opacity: 1, x: 0}}
-  exit={{opacity: 0, x: -50}}
+  exit={{opacity: 0, x: -15}}
   >
     {children}
   </motion.div>
